@@ -1,13 +1,38 @@
-name: release
+name: Run Fine-Tuning on Kaggle
+
 on:
-  push:
-    branches: [main, master]
+  workflow_dispatch:  # Allows manual trigger
 
 jobs:
-  build:
+  run-kaggle:
     runs-on: ubuntu-latest
     steps:
-      - uses: marvinpinto/action-automatic-releases@latest
+      - name: Checkout your repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          automatic_release_tag: development
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          pip install kaggle
+
+      - name: Create kaggle.json
+        run: |
+          mkdir -p ~/.kaggle
+          echo "{\"username\":\"${{ secrets.KAGGLE_USERNAME }}\",\"key\":\"${{ secrets.KAGGLE_KEY }}\"}" > ~/.kaggle/kaggle.json
+          chmod 600 ~/.kaggle/kaggle.json
+
+      - name: Upload and run fine-tuning notebook
+        run: |
+          kaggle kernels push -p .
+          kaggle kernels output <your-kaggle-username>/<kernel-name> -p output/
+
+      # Optional: Save fine-tuned model artifacts
+      - name: Upload fine-tuned model (optional)
+        uses: actions/upload-artifact@v3
+        with:
+          name: mistral-finetuned
+          path: output/
