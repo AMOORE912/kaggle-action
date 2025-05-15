@@ -35,14 +35,14 @@ jobs:
         run: kaggle kernels output arabellamoore/fine-tune -p output/
 
       - name: Prepare dummy artifact (fixes upload-artifact download error)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: dummy
           path: README.md
           if-no-files-found: ignore
     
       - name: Upload fine-tuned model (optional)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: mistral-finetuned
           path: output/
