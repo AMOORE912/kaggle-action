@@ -28,7 +28,7 @@ jobs:
       - name: Upload and run fine-tuning notebook
         run: |
           kaggle kernels push -p .
-          kaggle kernels output <your-kaggle-username>/<kernel-name> -p output/
+          kaggle kernels output arabellamoore/fine-tune -p output/
 
       # Optional: Save fine-tuned model artifacts
       - name: Upload fine-tuned model (optional)
