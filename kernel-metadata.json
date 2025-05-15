@@ -1,1 +1,8 @@
-
+{
+  "id": "yourname/fine-tune",
+  "title": "Fine Tune Mistral on Custom Dataset",
+  "code_file": "fine-tune.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true
+}
