@@ -1,7 +1,7 @@
 name: Run Fine-Tuning on Kaggle
 
 on:
-  workflow_dispatch:  # Allows manual trigger
+  workflow_dispatch:
 
 jobs:
   run-kaggle:
@@ -25,12 +25,22 @@ jobs:
           echo "{\"username\":\"${{ secrets.KAGGLE_USERNAME }}\",\"key\":\"${{ secrets.KAGGLE_KEY }}\"}" > ~/.kaggle/kaggle.json
           chmod 600 ~/.kaggle/kaggle.json
 
-      - name: Upload and run fine-tuning notebook
-        run: |
-          kaggle kernels push -p .
-          kaggle kernels output arabellamoore/fine-tune -p output/
+      - name: Push notebook to Kaggle
+        run: kaggle kernels push -p .
 
-      # Optional: Save fine-tuned model artifacts
+      - name: Wait a bit for execution
+        run: sleep 60
+
+      - name: Download output from Kaggle
+        run: kaggle kernels output arabellamoore/fine-tune -p output/
+
+      - name: Prepare dummy artifact (fixes upload-artifact download error)
+        uses: actions/upload-artifact@v3
+        with:
+          name: dummy
+          path: README.md
+          if-no-files-found: ignore
+
       - name: Upload fine-tuned model (optional)
         uses: actions/upload-artifact@v3
         with:
